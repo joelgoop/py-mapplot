@@ -83,8 +83,6 @@ class MapPlot(Basemap):
             except KeyError as e:
                 warnings.warn("No text for '{}'.".format(r))
 
-
-
     def color_regions(self,reg_colors):
         """Set facecolor for each region in reg_colors."""
         if not hasattr(self,'reg_lcs'):
