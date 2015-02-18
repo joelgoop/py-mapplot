@@ -11,7 +11,7 @@ class MapPlot(Basemap):
 
     def __init__(self,continent_color='0.9',**kwargs):
         if 'ax' not in kwargs:
-            raise ValueError("An axis object must be given.")
+            raise ValueError("An axes object must be given.")
         super(MapPlot, self).__init__(**kwargs)
 
         self.default_region_style = {
