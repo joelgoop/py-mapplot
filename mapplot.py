@@ -14,23 +14,39 @@ class MapPlot(Basemap):
             raise ValueError("An axes object must be given.")
         super(MapPlot, self).__init__(**kwargs)
 
-        self.default_region_style = {
-            "edgecolors": "k",
-            "linewidth": 0.2,
-            "facecolor": "white"
+        self.defaults = {
+            "region_style": {
+                "edgecolors": "k",
+                "linewidth": 0.2,
+                "facecolor": "white"
+            },
+            "colormap": cm.Blues,
+            "linestyle": {
+                "linewidth": 2,
+                "color": "0.2"
+            },
+            "markerstyle": {
+                "marker": 'o',
+                "markersize": 4     ,
+                "markeredgecolor": "k",
+                "markerfacecolor": "0.8"
+            },
+            "text_props": {
+                "horizontalalignment": "center",
+                "verticalalignment": "center" 
+            }
         }
-
-        self.default_colormap = cm.Blues
-
-        self.default_text_props = {
-            "horizontalalignment": "center",
-            "verticalalignment": "center" 
-        }
-
+        
         if continent_color and self.resolution:
             self.fillcontinents(color=continent_color)
 
         self.set_axes_limits()
+
+    def _with_defaults(self,key,new):
+        """Create new dict of settings based on default and new."""
+        out = self.defaults[key].copy()
+        out.update(new)
+        return out
 
     def load_regions(self,shp_file,**kwargs):
         """Load the regions to plot on map."""
@@ -58,8 +74,7 @@ class MapPlot(Basemap):
             raise AttributeError("Regions must be loaded "
                                     "before they can be drawn.")
 
-        lc_args = self.default_region_style.copy()
-        lc_args.update(region_style)
+        lc_args = self._with_defaults("region_style",region_style)
         self.reg_lcs = {}
         for key,segs in self.regs.iteritems():
             lc = LineCollection(segs,antialiaseds=(1,))
@@ -74,14 +89,34 @@ class MapPlot(Basemap):
         if not texts:
             texts = dict(zip(self.regs.keys(),self.regs.keys()))
 
-        text_props = self.default_text_props.copy()
-        text_props.update(kwargs)
-
+        text_props = self._with_defaults("text_props",kwargs)
         for r,(x,y) in coords.iteritems():
             try:
                 self.ax.text(x,y,texts[r],**text_props)
             except KeyError as e:
                 warnings.warn("No text for '{}'.".format(r))
+
+    def draw_points(self,coords,**kwargs):
+        """Draw points from a list of coordinates (x,y)."""
+        markerstyle = self._with_defaults("markerstyle",kwargs)
+        xs,ys = zip(*coords)
+        self.plot(xs,ys,linestyle='none',**markerstyle)
+        
+    def draw_lines(self,points,lines,all_points=False,**kwargs):
+        """Draw lines between selected points from 'points'."""
+
+        # Draw lines between each selected pair of points
+        for (p1,p2),styles in lines.iteritems():
+            linestyle = self._with_defaults("linestyle",styles)
+            xs,ys = zip(points[p1],points[p2])
+            self.plot(xs,ys,**linestyle)
+
+        # Draw each point once
+        if all_points:
+            plot_points = points.values()
+        else:
+            plot_points = [points[p] for p in set(sum(lines.keys(),()))]
+        self.draw_points(plot_points,**kwargs)
 
     def color_regions(self,reg_colors):
         """Set facecolor for each region in reg_colors."""
