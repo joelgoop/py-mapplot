@@ -111,10 +111,10 @@ class MapPlot(Basemap):
             xs,ys = zip(points[p1],points[p2])
             self.plot(xs,ys,**linestyle)
 
-        # Draw each point once
         if all_points:
             plot_points = points.values()
         else:
+            # Draw each point once
             plot_points = [points[p] for p in set(sum(lines.keys(),()))]
         self.draw_points(plot_points,**kwargs)
 
