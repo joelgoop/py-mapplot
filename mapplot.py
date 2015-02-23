@@ -65,7 +65,7 @@ class MapPlot(Basemap):
         for shapedict,shape in zip(self._shapes_info,self._shapes):
             key = key_fcn(shapedict)
             # Check filter if given
-            if not filter_fcn or filter_fcn(shapedict):
+            if (not filter_fcn) or filter_fcn(shapedict):
                 getattr(self,attr)[key].append(shape)
 
     def draw_regions(self,**region_style):
@@ -129,7 +129,7 @@ class MapPlot(Basemap):
 
     def color_from_values(self,val_dict,clims=None,cblabel=None,colormap=None):
         """Fill regions based on values in val_dict and colormap."""
-        cmap = self.default_colormap if not colormap else colormap
+        cmap = colormap or self.default_colormap
         self.sm = cm.ScalarMappable(cmap=cmap)
         self.sm.set_array(list(clims) if clims else val_dict.values())
         self.sm.autoscale()
