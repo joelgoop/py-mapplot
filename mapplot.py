@@ -9,33 +9,33 @@ import warnings
 class MapPlot(Basemap):
     """Class to plot map with regions."""
 
+    defaults = {
+        "region_style": {
+            "edgecolors": "k",
+            "linewidth": 0.2,
+            "facecolor": "white"
+        },
+        "colormap": cm.Blues,
+        "linestyle": {
+            "linewidth": 2,
+            "color": "0.2"
+        },
+        "markerstyle": {
+            "marker": 'o',
+            "markersize": 4     ,
+            "markeredgecolor": "k",
+            "markerfacecolor": "0.8"
+        },
+        "text_props": {
+            "horizontalalignment": "center",
+            "verticalalignment": "center" 
+        }
+    }
+
     def __init__(self,continent_color='0.9',**kwargs):
         if 'ax' not in kwargs:
             raise ValueError("An axes object must be given.")
         super(MapPlot, self).__init__(**kwargs)
-
-        self.defaults = {
-            "region_style": {
-                "edgecolors": "k",
-                "linewidth": 0.2,
-                "facecolor": "white"
-            },
-            "colormap": cm.Blues,
-            "linestyle": {
-                "linewidth": 2,
-                "color": "0.2"
-            },
-            "markerstyle": {
-                "marker": 'o',
-                "markersize": 4     ,
-                "markeredgecolor": "k",
-                "markerfacecolor": "0.8"
-            },
-            "text_props": {
-                "horizontalalignment": "center",
-                "verticalalignment": "center" 
-            }
-        }
         
         if continent_color and self.resolution:
             self.fillcontinents(color=continent_color)
@@ -127,9 +127,9 @@ class MapPlot(Basemap):
         for r,c in reg_colors.iteritems():
             self.reg_lcs[r].set_facecolor(c)
 
-    def color_from_values(self,val_dict,clims=None,cblabel=None,colormap=None):
+    def color_from_values(self,val_dict,clims=None,colormap=None):
         """Fill regions based on values in val_dict and colormap."""
-        cmap = colormap or self.default_colormap
+        cmap = colormap or self.defaults['colormap']
         self.sm = cm.ScalarMappable(cmap=cmap)
         self.sm.set_array(list(clims) if clims else val_dict.values())
         self.sm.autoscale()
