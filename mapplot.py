@@ -32,9 +32,8 @@ class MapPlot(Basemap):
         }
     }
 
-    def __init__(self,continent_color='0.9',**kwargs):
-        if 'ax' not in kwargs:
-            raise ValueError("An axes object must be given.")
+    def __init__(self,ax,continent_color='0.9',**kwargs):
+        kwargs['ax']=ax
         super(MapPlot, self).__init__(**kwargs)
         
         if continent_color and self.resolution:
