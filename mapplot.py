@@ -101,7 +101,7 @@ class MapPlot(Basemap):
         xs,ys = zip(*coords)
         self.plot(xs,ys,linestyle='none',**markerstyle)
         
-    def draw_lines(self,points,lines,all_points=False,**kwargs):
+    def draw_point_lines(self,points,lines,all_points=False,**kwargs):
         """Draw lines between selected points from 'points'."""
 
         # Draw lines between each selected pair of points
@@ -115,6 +115,19 @@ class MapPlot(Basemap):
         else:
             # Draw each point once
             plot_points = [points[p] for p in set(sum(lines.keys(),()))]
+        self.draw_points(plot_points,**kwargs)
+
+    def draw_lines(self,lines,all_points=False,**kwargs):
+        """Draw lines between selected points from 'points'."""
+
+        # Draw lines between each pair of points
+        plot_points = []
+        for coords,styles in lines:
+            linestyle = self._with_defaults("linestyle",styles)
+            xs,ys = zip(*coords)
+            self.plot(xs,ys,**linestyle)
+            plot_points += coords
+
         self.draw_points(plot_points,**kwargs)
 
     def color_regions(self,reg_colors):
