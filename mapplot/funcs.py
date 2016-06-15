@@ -8,4 +8,4 @@ def eq(key, value):
 
 def on_val(func):
     """Return function that applies func to value in dict."""
-    return lambda (k, v): (k, func(v))
+    return lambda k_v: (k_v[0], func(k_v[1]))

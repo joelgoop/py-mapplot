@@ -79,7 +79,7 @@ class MapPlot(Basemap):
 
         lc_args = self._with_defaults("region_style", region_style)
         self.reg_lcs = {}
-        for key, segs in self.regs.iteritems():
+        for key, segs in list(self.regs.items()):
             lc = LineCollection(segs, antialiaseds=(1,))
             lc.set(**lc_args)
             self.ax.add_collection(lc)
@@ -93,7 +93,7 @@ class MapPlot(Basemap):
             texts = dict(zip(self.regs.keys(), self.regs.keys()))
 
         text_props = self._with_defaults("text_props", kwargs)
-        for r, (x, y) in coords.iteritems():
+        for r, (x, y) in coords.items():
             try:
                 self.ax.text(x, y, texts[r], **text_props)
             except KeyError:
@@ -102,23 +102,23 @@ class MapPlot(Basemap):
     def draw_points(self, coords, **kwargs):
         """Draw points from a list of coordinates (x,y)."""
         markerstyle = self._with_defaults("markerstyle", kwargs)
-        xs, ys = zip(*coords)
+        xs, ys = list(zip(*coords))
         self.plot(xs, ys, linestyle='none', **markerstyle)
 
     def draw_point_lines(self, points, lines, all_points=False, **kwargs):
         """Draw lines between selected points from 'points'."""
 
         # Draw lines between each selected pair of points
-        for (p1, p2), styles in lines.iteritems():
+        for (p1, p2), styles in list(lines.items()):
             linestyle = self._with_defaults("linestyle", styles)
-            xs, ys = zip(points[p1], points[p2])
+            xs, ys = list(zip(points[p1], points[p2]))
             self.plot(xs, ys, **linestyle)
 
         if all_points:
-            plot_points = points.values()
+            plot_points = list(points.values())
         else:
             # Draw each point once
-            plot_points = [points[p] for p in set(sum(lines.keys(), ()))]
+            plot_points = [points[p] for p in set(sum(lines.keys()), ())]
         self.draw_points(plot_points, **kwargs)
 
     def draw_lines(self, lines, all_points=False, **kwargs):
@@ -128,7 +128,7 @@ class MapPlot(Basemap):
         plot_points = []
         for coords, styles in lines:
             linestyle = self._with_defaults("linestyle", styles)
-            xs, ys = zip(*coords)
+            xs, ys = list(zip(*coords))
             self.plot(xs, ys, **linestyle)
             plot_points += coords
 
@@ -140,19 +140,19 @@ class MapPlot(Basemap):
             raise AttributeError("Regions must be drawn "
                                  "before they can be colored.")
 
-        for r, c in reg_colors.iteritems():
+        for r, c in reg_colors.items():
             self.reg_lcs[r].set_facecolor(c)
 
     def color_from_values(self, val_dict, clims=None, colormap=None):
         """Fill regions based on values in val_dict and colormap."""
         cmap = colormap or self.defaults['colormap']
         self.sm = cm.ScalarMappable(cmap=cmap)
-        self.sm.set_array(list(clims) if clims else val_dict.values())
+        self.sm.set_array(list(clims) if clims else list(val_dict.values()))
         self.sm.autoscale()
 
         # Map colormap over dict values and call color_regions
         self.color_regions({r: self.sm.to_rgba(val)
-                            for r, val in val_dict.iteritems()})
+                            for r, val in val_dict.items()})
 
     def add_colorbar(self, label=None, **kwargs):
         """Add a colorbar to the map."""
