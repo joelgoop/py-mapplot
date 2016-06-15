@@ -1,0 +1,18 @@
+package:
+  name: mapplot
+  version: "1.0.0"
+ 
+source:
+  git_url: ../
+  git_tag: master
+
+requirements:
+  build:
+    - python
+    - setuptools
+  run:
+    - python
+    - matplotlib
+ 
+about:
+  summary: "Plot and color maps from shapefiles"

@@ -7,9 +7,5 @@ except ImportError:
 setup(
     name='mapplot',
     version='1.0.0',
-    packages=['mapplot'],
-    install_requires=[
-        'matplotlib',
-        'basemap'
-    ],
+    packages=['mapplot']
 )
