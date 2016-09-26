@@ -6,6 +6,6 @@ except ImportError:
 
 setup(
     name='mapplot',
-    version='1.0.2',
+    version='1.1.0',
     packages=['mapplot']
 )
