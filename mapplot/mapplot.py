@@ -136,7 +136,7 @@ class MapPlot(Basemap):
 
     def color_regions(self, reg_colors):
         """Set facecolor for each region in reg_colors."""
-        self.style_regions({r: {'facecolor': c} for r, c in reg_colors})
+        self.style_regions({r: {'facecolor': c} for r, c in reg_colors.items()})
 
     def style_regions(self, region_styles):
         """Set styles for each region in region_styles."""
